@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ecommerce Website</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+
+    <!-- Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        primary: '#4F46E5',
+                        primaryHover: '#4338CA',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 font-sans text-gray-800 antialiased overflow-x-hidden">
+
+    <!-- ================= NAVBAR ================= -->
+    <nav class="bg-white shadow-sm sticky top-0 z-40 border-b border-gray-100">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#" class="text-2xl font-bold text-primary tracking-tight flex items-center gap-2">
+                <i class="fas fa-bolt text-yellow-500"></i> Ecommerce Store
+            </a>
+            
+            <div class="hidden md:flex space-x-8 font-medium text-gray-600">
+                <a href="#" class="hover:text-primary transition">Home</a>
+                <a href="#products" class="hover:text-primary transition">Shop</a>
+                <a href="#" class="hover:text-primary transition">About Us</a>
+            </div>
+
+            <div class="flex items-center space-x-6">
+                <div class="hidden md:flex relative">
+                    <input type="text" placeholder="Search products..." class="bg-gray-100 rounded-full py-2 px-4 pl-10 focus:outline-none focus:ring-2 focus:ring-primary focus:bg-white transition text-sm w-64">
+                    <i class="fas fa-search absolute left-3 top-2.5 text-gray-400"></i>
+                </div>
+
+                <button onclick="toggleCart()" class="relative hover:text-primary transition text-xl">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span id="cart-count" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center border-2 border-white">0</span>
+                </button>
+
+                <button id="auth-button" onclick="toggleAuthModal()" class="bg-primary text-white px-5 py-2 rounded-full font-medium hover:bg-primaryHover transition shadow-md shadow-indigo-200 text-sm">
+                    Login
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ================= HERO ================= -->
+    <header class="bg-gradient-to-br from-indigo-600 via-indigo-700 to-purple-800 text-white py-24 relative overflow-hidden">
+        <div class="absolute top-0 right-0 bg-white opacity-5 rounded-full w-96 h-96 -mr-20 -mt-20"></div>
+        <div class="absolute bottom-0 left-0 bg-white opacity-5 rounded-full w-64 h-64 -ml-20 -mb-20"></div>
+
+        <div class="container mx-auto px-6 relative z-10 flex flex-col md:flex-row items-center">
+            <div class="md:w-1/2 mb-10 md:mb-0 text-center md:text-left">
+                <span class="bg-indigo-500 bg-opacity-50 text-indigo-100 px-4 py-1 rounded-full text-sm font-semibold tracking-wide uppercase mb-4 inline-block">New Arrivals</span>
+                <h1 class="text-5xl md:text-6xl font-bold mb-6 leading-tight animate-fade-in-up">Next-Gen Tech <br> At Your Fingertips.</h1>
+                <p class="text-lg md:text-xl mb-8 text-indigo-100 opacity-90 animate-fade-in-up delay-100">Discover the latest gadgets and accessories. Premium quality, unbeatable prices, delivered to your door.</p>
+                <div class="animate-fade-in-up delay-200 flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+                    <button onclick="document.getElementById('products').scrollIntoView({behavior: 'smooth'})" class="bg-white text-primary px-8 py-3 rounded-full font-bold hover:bg-gray-100 transition shadow-lg">Shop Now</button>
+                    <!-- <button class="border border-indigo-300 text-white px-8 py-3 rounded-full font-bold hover:bg-white hover:text-primary transition">View Deals</button> -->
+                </div>
+            </div>
+            <div class="md:w-1/2 flex justify-center animate-fade-in-up delay-300">
+                <img src="https://images.unsplash.com/photo-1498049794561-7780e7231661?w=800&auto=format&fit=crop&q=80" alt="Tech Gadgets" class="rounded-2xl shadow-2xl transform rotate-3 w-full max-w-md object-cover h-80">
+            </div>
+        </div>
+    </header>
+
+    <!-- ================= PRODUCTS ================= -->
+    <main class="container mx-auto px-6 py-16" id="products">
+        <div class="flex justify-between items-end mb-10">
+            <div>
+                <h2 class="text-3xl font-bold text-gray-900">Featured Products</h2>
+                <p class="text-gray-500 mt-2">Handpicked gadgets just for you.</p>
+            </div>
+            <a href="#" class="text-primary font-semibold hover:underline hidden sm:block">View All <i class="fas fa-arrow-right ml-1"></i></a>
+        </div>
+
+        <div id="product-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div class="animate-pulse bg-white p-4 rounded-xl shadow-sm"><div class="bg-gray-200 h-48 rounded-lg mb-4"></div><div class="h-4 bg-gray-200 rounded w-3/4 mb-2"></div><div class="h-4 bg-gray-200 rounded w-1/2"></div></div>
+            <div class="animate-pulse bg-white p-4 rounded-xl shadow-sm"><div class="bg-gray-200 h-48 rounded-lg mb-4"></div><div class="h-4 bg-gray-200 rounded w-3/4 mb-2"></div><div class="h-4 bg-gray-200 rounded w-1/2"></div></div>
+            <div class="animate-pulse bg-white p-4 rounded-xl shadow-sm"><div class="bg-gray-200 h-48 rounded-lg mb-4"></div><div class="h-4 bg-gray-200 rounded w-3/4 mb-2"></div><div class="h-4 bg-gray-200 rounded w-1/2"></div></div>
+            <div class="animate-pulse bg-white p-4 rounded-xl shadow-sm"><div class="bg-gray-200 h-48 rounded-lg mb-4"></div><div class="h-4 bg-gray-200 rounded w-3/4 mb-2"></div><div class="h-4 bg-gray-200 rounded w-1/2"></div></div>
+        </div>
+    </main>
+
+    <!-- ================= FOOTER ================= -->
+    <footer class="bg-gray-900 text-white pt-16 pb-8">
+        <div class="container mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+            <div>
+                <h3 class="text-2xl font-bold text-white mb-4 flex items-center gap-2"><i class="fas fa-bolt text-yellow-500"></i>Ecommerce Store</h3>
+                <p class="text-gray-400 text-sm leading-relaxed">Your one-stop shop for the latest and greatest in technology. Quality guaranteed.</p>
+            </div>
+            <div>
+                <h4 class="font-bold mb-4">Quick Links</h4>
+                <ul class="space-y-2 text-gray-400 text-sm">
+                    <li><a href="#" class="hover:text-white transition">About Us</a></li>
+                    <!-- <li><a href="#" class="hover:text-white transition">Contact</a></li>
+                    <li><a href="#" class="hover:text-white transition">Shipping Policy</a></li> -->
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold mb-4">Categories</h4>
+                <ul class="space-y-2 text-gray-400 text-sm">
+                    <li><a href="#products" class="hover:text-white transition">Electronics</a></li>
+                    <li><a href="#products" class="hover:text-white transition">Accessories</a></li>
+                    <li><a href="#products" class="hover:text-white transition">Wearables</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold mb-4">Newsletter</h4>
+                <p class="text-gray-400 text-sm mb-4">Subscribe for exclusive deals.</p>
+                <!-- <div class="flex">
+                    <input type="email" placeholder="Email address" class="bg-gray-800 text-white px-4 py-2 rounded-l-lg focus:outline-none w-full text-sm">
+                    <button class="bg-primary px-4 py-2 rounded-r-lg hover:bg-primaryHover transition"><i class="fas fa-paper-plane"></i></button>
+                </div> -->
+            </div>
+        </div>
+        <div class="border-t border-gray-800 pt-8 text-center text-gray-500 text-sm">
+            <p>&copy; 2024 Ecommerce Store. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- ================= CART PANEL ================= -->
+    <div id="cart-overlay" onclick="toggleCart()" class="fixed inset-0 bg-black bg-opacity-50 z-50 opacity-0 pointer-events-none"></div>
+    <div id="cart-panel" class="fixed top-0 right-0 h-full w-full sm:w-96 bg-white shadow-2xl z-50 transform translate-x-full flex flex-col">
+        <div class="p-6 border-b flex justify-between items-center bg-gray-50">
+            <h2 class="text-xl font-bold text-gray-800"><i class="fas fa-shopping-cart mr-2 text-primary"></i> Your Cart</h2>
+            <button onclick="toggleCart()" class="text-gray-500 hover:text-red-500 transition text-xl"><i class="fas fa-times"></i></button>
+        </div>
+        
+        <div id="cart-items" class="flex-1 overflow-y-auto p-6 no-scrollbar">
+            <p class="text-center text-gray-500 mt-10">Your cart is empty.</p>
+        </div>
+
+        <div class="p-6 border-t bg-gray-50">
+            <div class="flex justify-between mb-4">
+                <span class="text-gray-600 font-medium">Subtotal</span>
+                <span id="cart-total" class="text-xl font-bold text-gray-900">$0.00</span>
+            </div>
+            <button onclick="checkout()" class="w-full bg-primary text-white py-3 rounded-xl font-bold hover:bg-primaryHover transition shadow-lg shadow-indigo-200">Checkout Now</button>
+        </div>
+    </div>
+
+    <!-- ================= AUTH MODAL ================= -->
+    <div id="auth-modal" class="fixed inset-0 z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="absolute inset-0 bg-black bg-opacity-60" onclick="toggleAuthModal()"></div>
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-8 relative z-10 transform scale-95 transition-transform duration-300">
+            <button onclick="toggleAuthModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-700"><i class="fas fa-times text-xl"></i></button>
+            
+            <div class="text-center mb-8">
+                <h2 id="auth-title" class="text-3xl font-bold text-gray-900">Welcome Back</h2>
+                <p id="auth-subtitle" class="text-gray-500 mt-2">Please login to your account</p>
+            </div>
+
+            <form id="auth-form" class="space-y-5">
+                <div id="name-group" class="hidden">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                    <div class="relative">
+                        <i class="fas fa-user absolute left-3 top-3 text-gray-400"></i>
+                        <input type="text" id="auth-name" class="w-full pl-10 pr-4 py-2 border rounded-xl focus:ring-2 focus:ring-primary focus:border-primary outline-none transition" placeholder="John Doe">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                    <div class="relative">
+                        <i class="fas fa-envelope absolute left-3 top-3 text-gray-400"></i>
+                        <input type="email" id="auth-email" required class="w-full pl-10 pr-4 py-2 border rounded-xl focus:ring-2 focus:ring-primary focus:border-primary outline-none transition" placeholder="you@example.com">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                    <div class="relative">
+                        <i class="fas fa-lock absolute left-3 top-3 text-gray-400"></i>
+                        <input type="password" id="auth-password" required class="w-full pl-10 pr-4 py-2 border rounded-xl focus:ring-2 focus:ring-primary focus:border-primary outline-none transition" placeholder="••••••••">
+                    </div>
+                </div>
+                <button type="submit" id="auth-submit-btn" class="w-full bg-primary text-white py-3 rounded-xl font-bold hover:bg-primaryHover transition shadow-lg shadow-indigo-200">Login</button>
+            </form>
+
+            <p class="text-center mt-6 text-sm text-gray-600">
+                <span id="toggle-text">Don't have an account?</span> 
+                <button onclick="toggleAuthMode()" id="toggle-btn" class="text-primary font-bold hover:underline">Register</button>
+            </p>
+        </div>
+    </div>
+
+    <!-- ================= PRODUCT DETAILS MODAL ================= -->
+    <div id="modal-overlay" class="fixed inset-0 z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="absolute inset-0 bg-black bg-opacity-60" onclick="closeModal()"></div>
+        <div id="modal-content" class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl p-0 relative z-10 transform scale-95 opacity-0 transition-all duration-300 overflow-hidden flex flex-col md:flex-row">
+            <button onclick="closeModal()" class="absolute top-4 right-4 bg-white bg-opacity-80 rounded-full h-10 w-10 flex items-center justify-center text-gray-800 hover:text-red-500 z-20 shadow-md"><i class="fas fa-times"></i></button>
+
+            <div class="md:w-1/2 bg-gray-100 h-64 md:h-auto">
+                <img id="modal-img" src="" alt="Product" class="w-full h-full object-cover">
+            </div>
+
+            <div class="md:w-1/2 p-8 flex flex-col justify-center">
+                <span id="modal-category" class="text-xs font-bold text-primary uppercase tracking-wider mb-2">Category</span>
+                <h2 id="modal-title" class="text-3xl font-bold text-gray-900 mb-2">Product Name</h2>
+                <div class="flex items-center mb-4">
+                    <div class="flex text-yellow-400 text-sm">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+                    </div>
+                    <span class="text-gray-500 text-sm ml-2">(4.5 Reviews)</span>
+                </div>
+                <p id="modal-desc" class="text-gray-600 mb-6 leading-relaxed">Product description goes here.</p>
+                <div class="text-3xl font-bold text-gray-900 mb-6" id="modal-price">$99.99</div>
+                
+                <div class="flex gap-4">
+                    <button id="modal-add-btn" class="flex-1 bg-primary text-white py-3 rounded-xl font-bold hover:bg-primaryHover transition shadow-lg shadow-indigo-200 flex items-center justify-center gap-2">
+                        <i class="fas fa-cart-plus"></i> Add to Cart
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= TOAST CONTAINER ================= -->
+    <div id="toast-container" class="fixed bottom-5 right-5 z-[100] flex flex-col gap-2"></div>
+
+    <!-- Custom JS -->
+    <script src="js/app.js"></script>
+</body>
+</html>
