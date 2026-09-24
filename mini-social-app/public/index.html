@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MiniGram - Connect & Share</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Toast Container -->
+    <div id="toast-container"></div>
+
+    <!-- =========================================
+         AUTHENTICATION UI
+         ========================================= -->
+    <div id="auth-container">
+        <div class="auth-wrapper">
+            <!-- Left: Branding -->
+            <div class="auth-branding">
+                <div class="brand-icon"><i class="fas fa-camera-retro"></i></div>
+                <h1>MiniGram</h1>
+                <p>Connect with friends, share your moments, and discover amazing content from around the world.</p>
+            </div>
+
+            <!-- Right: Form -->
+            <div class="auth-form-container">
+                <h2 id="auth-title">Welcome Back</h2>
+                <p class="auth-subtitle" id="auth-subtitle">Please enter your details to sign in.</p>
+                
+                <div id="auth-error" class="error-msg"></div>
+                
+                <form id="auth-form">
+                    <div class="input-group" id="username-group" style="display: none;">
+                        <i class="fas fa-user input-icon"></i>
+                        <input type="text" id="username" placeholder="Username" autocomplete="username">
+                    </div>
+                    <div class="input-group">
+                        <i class="fas fa-envelope input-icon"></i>
+                        <input type="email" id="email" placeholder="Email address" required autocomplete="email">
+                    </div>
+                    <div class="input-group">
+                        <i class="fas fa-lock input-icon"></i>
+                        <input type="password" id="password" placeholder="Password" required autocomplete="current-password">
+                        <i class="fas fa-eye toggle-password" onclick="togglePasswordVisibility()"></i>
+                    </div>
+                    <div class="password-strength" id="password-strength-container" style="display:none;">
+                        <div class="password-strength-bar" id="password-strength-bar"></div>
+                    </div>
+                    
+                    <button type="submit" id="auth-submit-btn" class="btn-primary">
+                        <span id="btn-text">Sign In</span>
+                        <div class="spinner" id="auth-spinner"></div>
+                    </button>
+                </form>
+                
+                <p class="switch-auth">
+                    <span id="auth-switch-text">Don't have an account? Sign Up</span>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- =========================================
+         MAIN APPLICATION UI
+         ========================================= -->
+    <div id="app-container" class="hidden">
+        <!-- Navbar -->
+        <nav class="navbar glass">
+            <div class="logo" onclick="showFeed()"><i class="fas fa-camera-retro"></i> MiniGram</div>
+            <div class="nav-actions">
+                <button class="nav-btn" onclick="showFeed()" title="Home"><i class="fas fa-home"></i></button>
+                <button class="nav-btn" onclick="showProfile(currentUser.id)" title="Profile"><i class="fas fa-user"></i></button>
+                <button class="nav-btn" onclick="logout()" title="Logout" style="color: var(--danger);"><i class="fas fa-sign-out-alt"></i></button>
+                <img src="" id="nav-avatar" class="user-avatar-nav" onclick="showProfile(currentUser.id)" alt="Profile">
+            </div>
+        </nav>
+
+        <!-- Feed View -->
+        <div id="feed-view">
+            <!-- Create Post -->
+            <div class="create-post glass">
+                <textarea id="post-content" placeholder="What's on your mind?"></textarea>
+                <button onclick="createPost()" class="btn-primary">Post <i class="fas fa-paper-plane" style="margin-left:5px;"></i></button>
+            </div>
+
+            <!-- Posts Feed -->
+            <div id="posts-feed"></div>
+        </div>
+
+        <!-- Profile View -->
+        <div id="profile-view" class="hidden">
+            <div class="profile-header glass">
+                <img src="" id="profile-avatar" class="profile-avatar-large" alt="Profile">
+                <div class="profile-info">
+                    <h2 id="profile-username">Username</h2>
+                    <p id="profile-email">email@example.com</p>
+                </div>
+               <div class="profile-stats">
+    <div class="stat-item" title="Posts">
+        <strong id="stat-posts">0</strong>
+        <span>Posts</span>
+    </div>
+    <div class="stat-item" onclick="openFollowListModal('followers')" title="View Followers">
+        <strong id="stat-followers">0</strong>
+        <span>Followers</span>
+    </div>
+    <div class="stat-item" onclick="openFollowListModal('following')" title="View Following">
+        <strong id="stat-following">0</strong>
+        <span>Following</span>
+    </div>
+</div>
+                <div class="profile-actions">
+    <button class="btn-outline" onclick="showFeed()"><i class="fas fa-arrow-left"></i> Back to Feed</button>
+    
+    <!-- Edit Profile (Only for own profile) -->
+    <button class="btn-primary hidden" id="edit-profile-btn" onclick="openEditProfileModal()" style="width: auto; padding: 10px 20px;">
+        <i class="fas fa-edit"></i> Edit Profile
+    </button>
+    
+    <!-- Follow / Following Button (Only for others' profiles) -->
+    <button class="btn-primary hidden" id="follow-btn" onclick="toggleFollow()" style="width: auto; padding: 10px 25px;">
+        <i class="fas fa-user-plus"></i> <span id="follow-btn-text">Follow</span>
+    </button>
+</div>
+            </div>
+            <div id="profile-posts" style="margin-top: 20px; display: flex; flex-direction: column; gap: 20px;"></div>
+        </div>
+    </div>
+
+    <!-- =========================================
+         EDIT PROFILE MODAL
+         ========================================= -->
+    <div id="edit-profile-modal" class="hidden modal-overlay">
+        <div class="glass modal-content">
+            <div class="modal-header">
+                <h3>Edit Profile</h3>
+                <button onclick="closeEditProfileModal()" class="close-btn"><i class="fas fa-times"></i></button>
+            </div>
+
+            <!-- Current Avatar Preview -->
+            <div class="avatar-preview-container">
+                <img id="edit-avatar-preview" src="" class="avatar-preview" alt="Preview">
+            </div>
+
+            <!-- Option 1: Upload File -->
+            <div class="input-group file-upload-group">
+                <label>Upload from device</label>
+                <input type="file" id="avatar-file-input" accept="image/*">
+            </div>
+
+            <div class="divider">— OR —</div>
+
+            <!-- Option 2: Paste Image URL -->
+            <div class="input-group">
+                <label>Paste Image URL</label>
+                <input type="text" id="avatar-url-input" placeholder="https://example.com/photo.jpg">
+            </div>
+
+            <!-- Save Button -->
+            <button onclick="saveProfileChanges()" class="btn-primary" style="margin-top: 20px;">
+                <i class="fas fa-save"></i> Save Changes
+            </button>
+        </div>
+    </div>
+
+    <!-- Custom JS -->
+    <script src="js/app.js"></script>
+     <script>
+        // Initialize IndexedDB storage before app.js runs
+        (async () => {
+            await initStorage();
+            // Now load app.js
+            const script = document.createElement('script');
+            script.src = 'js/app.js?v=' + Date.now(); // Cache bust
+            document.body.appendChild(script);
+        })();
+    </script>
+    <!-- =========================================
+     FOLLOWERS / FOLLOWING MODAL
+     ========================================= -->
+<div id="follow-list-modal" class="hidden modal-overlay">
+    <div class="glass modal-content" style="max-width: 500px; max-height: 80vh; display: flex; flex-direction: column;">
+        <div class="modal-header">
+            <h3 id="follow-list-title">Followers</h3>
+            <button onclick="closeFollowListModal()" class="close-btn"><i class="fas fa-times"></i></button>
+        </div>
+
+        <!-- Tabs for switching between Followers / Following -->
+        <div class="follow-tabs">
+            <button id="tab-followers" class="follow-tab active" onclick="switchFollowTab('followers')">
+                <i class="fas fa-users"></i> Followers
+            </button>
+            <button id="tab-following" class="follow-tab" onclick="switchFollowTab('following')">
+                <i class="fas fa-user-check"></i> Following
+            </button>
+        </div>
+
+        <!-- List Container -->
+        <div id="follow-list-container" class="follow-list-container">
+            <!-- Users injected here -->
+        </div>
+    </div>
+</div>
+</body>
+</html>
